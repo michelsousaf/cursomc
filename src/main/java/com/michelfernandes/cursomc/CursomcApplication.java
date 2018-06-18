@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.michelfernandes.cursomc.domain.Categoria;
 import com.michelfernandes.cursomc.domain.Cidade;
+import com.michelfernandes.cursomc.domain.Cliente;
+import com.michelfernandes.cursomc.domain.Endereco;
 import com.michelfernandes.cursomc.domain.Estado;
 import com.michelfernandes.cursomc.domain.Produto;
+import com.michelfernandes.cursomc.domain.enums.TipoCliente;
 import com.michelfernandes.cursomc.repositories.CategoriaRepository;
 import com.michelfernandes.cursomc.repositories.CidadeRepository;
+import com.michelfernandes.cursomc.repositories.ClienteRepository;
+import com.michelfernandes.cursomc.repositories.EnderecoRepository;
 import com.michelfernandes.cursomc.repositories.EstadoRepository;
 import com.michelfernandes.cursomc.repositories.ProdutoRepository;
 
@@ -21,16 +26,16 @@ public class CursomcApplication implements CommandLineRunner{
 	
 	@Autowired
 	private CategoriaRepository categoriaRepository;
-	
 	@Autowired
 	private ProdutoRepository produtoRepository;
-	
 	@Autowired
 	private EstadoRepository estadoRepository;
-	
 	@Autowired
 	private CidadeRepository cidadeRepository;
-	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	@Autowired
+	private EnderecoRepository enderecoRepository;
     // Command... inicia um metodo quando a aplicação inicia
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -68,8 +73,15 @@ public class CursomcApplication implements CommandLineRunner{
 		estadoRepository.save(Arrays.asList(est1, est2));
 		cidadeRepository.save(Arrays.asList(c1,c2,c3));
 		
-
+		Cliente  cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "34864830828", TipoCliente.PESSOAFISICA);
+		cli1.getTelefones().addAll(Arrays.asList("13983408077", "88728728782"));
 		
+		Endereco e1 = new  Endereco(null, "Rua Alcides alves","300","apt 500","Jardim","11330757",cli1, c1);
+		Endereco e2 = new  Endereco(null, "Rua. Praça republic","87","sal 44","Centro","11330757",cli1, c2);
+		
+		cli1.getEnderecos().addAll(Arrays.asList(e1,e2));
+		clienteRepository.save(Arrays.asList(cli1));
+		enderecoRepository.save(Arrays.asList(e1,e2));
 	}
 	
 
