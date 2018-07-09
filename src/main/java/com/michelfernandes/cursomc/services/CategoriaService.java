@@ -23,4 +23,10 @@ public class CategoriaService {
 		}
 		return obj;
 	}
+
+	public Categoria insert(Categoria obj) {
+		// se tiver null salva se não atualiza
+		obj.setId(null);
+		return repo.save(obj);
+	}
 }
