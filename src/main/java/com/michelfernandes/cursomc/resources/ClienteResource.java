@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.michelfernandes.cursomc.domain.Cliente;
 import com.michelfernandes.cursomc.dto.ClienteDTO;
+import com.michelfernandes.cursomc.dto.ClienteNewDTO;
 import com.michelfernandes.cursomc.services.ClienteService;
 
 @RestController
@@ -37,10 +38,10 @@ public class ClienteResource {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteDTO objDto) {
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
 		//converte obj dto para obj entity
 		Cliente obj = service.fromDTO(objDto);
-		//obj = service.insert(obj);
+		obj = service.insert(obj);
 		// pega a nova uri do novo da nova categoria que foi inserida
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(obj.getId()).toUri();
