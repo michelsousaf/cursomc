@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.michelfernandes.cursomc.domain.ItemPedido;
 import com.michelfernandes.cursomc.domain.PagamentoComBoleto;
@@ -12,7 +13,6 @@ import com.michelfernandes.cursomc.domain.enums.EstadoPagamento;
 import com.michelfernandes.cursomc.repositories.ItemPedidoRepository;
 import com.michelfernandes.cursomc.repositories.PagamentoRepository;
 import com.michelfernandes.cursomc.repositories.PedidoRepository;
-import com.michelfernandes.cursomc.repositories.ProdutoRepository;
 import com.michelfernandes.cursomc.services.exceptions.ObjectNotFoundException;
 
 
@@ -30,11 +30,13 @@ public class PedidoService {
 		private PagamentoRepository pagamentoRepository;
 		
 		@Autowired
-		private ProdutoRepository produtoRepository;
+		private ProdutoService produtoService;
 		
 		@Autowired
 		private ItemPedidoRepository itemPedidoRepository;
-	
+		
+		@Autowired
+		private ClienteService clienteService;
 	
 	public Pedido find(Integer id) {
 		Pedido obj = repo.findOne(id);
@@ -44,10 +46,11 @@ public class PedidoService {
 		}
 		return obj;
 	}
-
+	@Transactional
 	public Pedido insert(Pedido obj) {
 			obj.setId(null);
 				obj.setInstante(new Date());
+				obj.setCliente(clienteService.find(obj.getCliente().getId()));
 				obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 				obj.getPagamento().setPedido(obj);
 				if (obj.getPagamento() instanceof PagamentoComBoleto) {
@@ -58,10 +61,12 @@ public class PedidoService {
 				pagamentoRepository.save(obj.getPagamento());
 				for (ItemPedido ip : obj.getItens()) {
 					ip.setDesconto(0.0);
-					ip.setPreco(produtoRepository.findOne(ip.getProduto().getId()).getPreco());
+					ip.setProduto(produtoService.find(ip.getProduto().getId()));
+					ip.setPreco(ip.getProduto().getPreco());
 					ip.setPedido(obj);
 				}
 				itemPedidoRepository.save(obj.getItens());
+				System.out.println(obj);
 				return obj;
 			}
 			
