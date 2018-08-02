@@ -3,16 +3,23 @@ package com.michelfernandes.cursomc.services;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.michelfernandes.cursomc.domain.Cliente;
 import com.michelfernandes.cursomc.domain.ItemPedido;
 import com.michelfernandes.cursomc.domain.PagamentoComBoleto;
 import com.michelfernandes.cursomc.domain.Pedido;
 import com.michelfernandes.cursomc.domain.enums.EstadoPagamento;
+import com.michelfernandes.cursomc.repositories.ClienteRepository;
 import com.michelfernandes.cursomc.repositories.ItemPedidoRepository;
 import com.michelfernandes.cursomc.repositories.PagamentoRepository;
 import com.michelfernandes.cursomc.repositories.PedidoRepository;
+import com.michelfernandes.cursomc.security.UserSS;
+import com.michelfernandes.cursomc.services.exceptions.AuthorizationException;
 import com.michelfernandes.cursomc.services.exceptions.ObjectNotFoundException;
 
 
@@ -40,6 +47,9 @@ public class PedidoService {
 
 		@Autowired
 		private EmailService emailService;
+		
+		@Autowired
+		private ClienteRepository clienteRepository;
 	
 	public Pedido find(Integer id) {
 		Pedido obj = repo.findOne(id);
@@ -72,5 +82,15 @@ public class PedidoService {
 				emailService.sendOderConfirmationHtmlEmail(obj);
 				return obj;
 			}
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		UserSS user = UserService.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		PageRequest pageRequest = new PageRequest(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente =  clienteRepository.findOne(user.getId());
+		return repo.findByCliente(cliente, pageRequest);
+	}
 			
-		 }
+
+}
