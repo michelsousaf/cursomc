@@ -27,8 +27,8 @@ import com.michelfernandes.cursomc.services.exceptions.ObjectNotFoundException;
 @Service
 public class PedidoService {
 	
-	@Autowired
-	private PedidoRepository repo;
+		@Autowired
+		private PedidoRepository repo;
 	
 		@Autowired
 		private BoletoService boletoService;
