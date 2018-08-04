@@ -1,12 +1,17 @@
 package com.michelfernandes.cursomc;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.michelfernandes.cursomc.services.S3Service;
+
 @SpringBootApplication
 public class CursomcApplication implements CommandLineRunner {
-
+	
+	@Autowired
+	private S3Service s3Service;
 
 
 	// Command... inicia um metodo quando a aplicação inicia
@@ -15,9 +20,8 @@ public class CursomcApplication implements CommandLineRunner {
 	}
 
 	@Override
-
-	public void run(String... args) throws Exception {
-
-	}
+	public void run(String... args) throws Exception {	
+		s3Service.uploadFile("C:\\temp\\fotos\\wave.jpg");
+	}	
 
 }
