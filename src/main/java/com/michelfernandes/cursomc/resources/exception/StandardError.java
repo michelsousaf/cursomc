@@ -8,7 +8,8 @@ public class StandardError implements Serializable{
 	private Integer status;
 	private String msg;
 	private Long timeStamp;
-	
+	private String path;
+	private String error;
 	
 	public StandardError(Integer status, String msg, Long timeStamp) {
 		super();
@@ -33,6 +34,18 @@ public class StandardError implements Serializable{
 	}
 	public void setTimeStamp(Long timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
+	}
+	public String getError() {
+		return error;
+	}
+	public void setError(String error) {
+		this.error = error;
 	}
 
 }
